@@ -1123,7 +1123,270 @@ enum WealthLevel {
   VIP1,       // 5000
   VIP2,       // 6000
 }
+flutter:
+  assets:
+    - assets/bubbles/
+    - assets/bg/
+// screens/chats_list_screen.dart
+ListView.builder(
+  itemCount: 20,
+  itemBuilder: (context, i) => ListTile(
+    leading: CircleAvatar(child: Icon(Icons.person)),
+    title: Text('مستخدم ${i + 1}'),
+    subtitle: Text('آخر رسالة...'),
+    trailing: Icon(Icons.circle, color: Colors.green, size: 10),
+    onTap: () => Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => ChatScreen(chatName: 'مستخدم ${i + 1}')),
+    ),
+  ),
+)
+// services/user_service.dart
+import '../models/chat_item.dart';
 
+class UserService {
+  static int balanceD = 5000;
+  static Set<String> ownedItems = {'c18'}; // افتراضياً عنصر مجاني
+  static String currentBubble = 'assets/bubbles/white.png';
+  static String currentChatBackground = 'assets/bg/white.jpg';
+
+  static bool buyItem(ChatItem item) {
+    if (balanceD < item.priceD) return false;
+    if (ownedItems.contains(item.id)) return false;
+    balanceD -= item.priceD;
+    ownedItems.add(item.id);
+    return true;
+  }
+
+  static void applyItem(String id) {
+    // ابحث عن العنصر وطبّقه
+    // يمكنك استخدام دالة منفصلة تعيد ChatItem
+  }
+
+  static void applyFullItem(ChatItem item) {
+    currentBubble = item.bubbleAsset;
+    currentChatBackground = item.chatBackground;
+  }
+}
+// data/chat_items_data.dart
+import '../models/chat_item.dart';
+
+final List<ChatItem> chatItems = [
+  ChatItem(id: 'c1',  name: 'ذهبي ملكي',      bubbleAsset: 'assets/bubbles/gold.png',      chatBackground: 'assets/bg/gold.jpg',      priceD: 500),
+  ChatItem(id: 'c2',  name: 'نيون أزرق',      bubbleAsset: 'assets/bubbles/neon_blue.png', chatBackground: 'assets/bg/neon_blue.jpg', priceD: 450),
+  ChatItem(id: 'c3',  name: 'نيون وردي',      bubbleAsset: 'assets/bubbles/neon_pink.png', chatBackground: 'assets/bg/neon_pink.jpg', priceD: 450),
+  ChatItem(id: 'c4',  name: 'قلوب حمراء',     bubbleAsset: 'assets/bubbles/hearts.png',    chatBackground: 'assets/bg/hearts.jpg',    priceD: 600),
+  ChatItem(id: 'c5',  name: 'فضاء galaxy',    bubbleAsset: 'assets/bubbles/galaxy.png',    chatBackground: 'assets/bg/galaxy.jpg',    priceD: 800),
+  ChatItem(id: 'c6',  name: 'ماسي',            bubbleAsset: 'assets/bubbles/diamond.png',   chatBackground: 'assets/bg/diamond.jpg',   priceD: 1000),
+  ChatItem(id: 'c7',  name: 'نار flame',       bubbleAsset: 'assets/bubbles/fire.png',      chatBackground: 'assets/bg/fire.jpg',      priceD: 550),
+  ChatItem(id: 'c8',  name: 'جليد',            bubbleAsset: 'assets/bubbles/ice.png',       chatBackground: 'assets/bg/ice.jpg',       priceD: 550),
+  ChatItem(id: 'c9',  name: 'سحاب',            bubbleAsset: 'assets/bubbles/cloud.png',     chatBackground: 'assets/bg/cloud.jpg',     priceD: 300),
+  ChatItem(id: 'c10', name: 'غروب',            bubbleAsset: 'assets/bubbles/sunset.png',    chatBackground: 'assets/bg/sunset.jpg',    priceD: 400),
+  ChatItem(id: 'c11', name: 'بحر',             bubbleAsset: 'assets/bubbles/ocean.png',     chatBackground: 'assets/bg/ocean.jpg',     priceD: 420),
+  ChatItem(id: 'c12', name: 'غابة',            bubbleAsset: 'assets/bubbles/forest.png',    chatBackground: 'assets/bg/forest.jpg',    priceD: 380),
+  ChatItem(id: 'c13', name: 'مدينة ليل',       bubbleAsset: 'assets/bubbles/city.png',      chatBackground: 'assets/bg/city.jpg',      priceD: 500),
+  ChatItem(id: 'c14', name: 'أنمي',            bubbleAsset: 'assets/bubbles/anime.png',     chatBackground: 'assets/bg/anime.jpg',     priceD: 700),
+  ChatItem(id: 'c15', name: 'كرتون',           bubbleAsset: 'assets/bubbles/cartoon.png',   chatBackground: 'assets/bg/cartoon.jpg',   priceD: 350),
+  ChatItem(id: 'c16', name: 'ميناء',           bubbleAsset: 'assets/bubbles/minimal.png',   chatBackground: 'assets/bg/minimal.jpg',   priceD: 250),
+  ChatItem(id: 'c17', name: 'أسود فخم',        bubbleAsset: 'assets/bubbles/black.png',     chatBackground: 'assets/bg/black.jpg',     priceD: 900),
+  ChatItem(id: 'c18', name: 'أبيض كلاسيك',     bubbleAsset: 'assets/bubbles/white.png',     chatBackground: 'assets/bg/white.jpg',     priceD: 200),
+  ChatItem(id: 'c19', name: 'قوس قزح',         bubbleAsset: 'assets/bubbles/rainbow.png',   chatBackground: 'assets/bg/rainbow.jpg',   priceD: 750, isPremium: true),
+  ChatItem(id: 'c20', name: 'ملكي VIP',        bubbleAsset: 'assets/bubbles/royal.png',     chatBackground: 'assets/bg/royal.jpg',     priceD: 1500, isPremium: true),
+];
+const express = require('express');
+const app = express();
+app.use(express.json());
+
+// قاعدة بيانات مؤقتة (استبدلها بقاعدة بيانات حقيقية)
+const users = {
+  "user1": { balance: 100, redeemedCodes: [] }
+};
+
+// أكواد الهدايا العادية
+const giftCodes = {
+  "GIFT100": { amount: 100, maxUses: 100, used: 0 },
+  "GIFT500": { amount: 500, maxUses: 50, used: 0 }
+};
+
+// كود الأدمن - فلوس لا نهائية
+const ADMIN_CODE = "Admin";
+
+app.post('/redeem', (req, res) => {
+  const { userId, code } = req.body;
+
+  // التحقق من المستخدم
+  if (!users[userId]) {
+    return res.status(404).json({ error: "المستخدم غير موجود" });
+  }
+
+  const user = users[userId];
+
+  // ✅ التحقق من كود الأدمن
+  if (code === ADMIN_CODE) {
+    user.balance = Infinity; // فلوس لا نهائية
+    return res.json({
+      success: true,
+      message: "🎉 تم تفعيل وضع الأدمن - فلوس لا نهائية!",
+      balance: "∞"
+    });
+  }
+
+  // التحقق من كود الهدية العادي
+  const gift = giftCodes[code];
+  if (!gift) {
+    return res.status(400).json({ error: "كود غير صالح" });
+  }
+
+  // التحقق من عدم الاستخدام المسبق
+  if (user.redeemedCodes.includes(code)) {
+    return res.status(400).json({ error: "لقد استردت هذا الكود مسبقاً" });
+  }
+
+  // التحقق من الحد الأقصى للاستخدام
+  if (gift.used >= gift.maxUses) {
+    return res.status(400).json({ error: "انتهت صلاحية الكود" });
+  }
+
+  // إضافة الرصيد
+  user.balance += gift.amount;
+  gift.used++;
+  user.redeemedCodes.push(code);
+
+  res.json({
+    success: true,
+    message: `تم إضافة ${gift.amount} بنجاح`,
+    balance: user.balance
+  });
+});
+
+app.listen(3000, () => console.log('السيرفر يعمل على المنفذ 3000'));
+// screens/chat_screen.dart
+import 'package:flutter/material.dart';
+import '../models/message.dart';
+import '../services/user_service.dart';
+
+class ChatScreen extends StatefulWidget {
+  final String chatName;
+  ChatScreen({required this.chatName});
+
+  @override
+  _ChatScreenState createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
+  final _controller = TextEditingController();
+  final _scrollController = ScrollController();
+  final List<Message> messages = [];
+
+  void _send() {
+    if (_controller.text.trim().isEmpty) return;
+    setState(() {
+      messages.add(Message(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        senderId: 'me',
+        text: _controller.text.trim(),
+        time: DateTime.now(),
+        isMe: true,
+      ));
+    });
+    _controller.clear();
+    Future.delayed(Duration(milliseconds: 100), () {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final bg = UserService.currentChatBackground;
+    final bubble = UserService.currentBubble;
+
+    return Scaffold(
+      appBar: AppBar(title: Text(widget.chatName)),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(bg), fit: BoxFit.cover, opacity: 0.3,
+          ),
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                controller: _scrollController,
+                padding: EdgeInsets.all(12),
+                itemCount: messages.length,
+                itemBuilder: (context, i) => _buildBubble(messages[i], bubble),
+              ),
+            ),
+            _buildInput(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBubble(Message msg, String bubbleAsset) {
+    return Align(
+      alignment: msg.isMe ? Alignment.centerRight : Alignment.centerLeft,
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 4),
+        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
+        child: Stack(
+          children: [
+            // صورة الفقاعة كخلفية
+            Image.asset(bubbleAsset, fit: BoxFit.fill),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Text(
+                msg.text,
+                style: TextStyle(fontSize: 16, color: Colors.black87),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInput() {
+    return SafeArea(
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        color: Colors.black.withOpacity(0.05),
+        child: Row(
+          children: [
+            IconButton(icon: Icon(Icons.emoji_emotions_outlined), onPressed: () {}),
+            Expanded(
+              child: TextField(
+                controller: _controller,
+                decoration: InputDecoration(
+                  hintText: 'اكتب رسالة...',
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(24),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+                onSubmitted: (_) => _send(),
+              ),
+            ),
+            IconButton(icon: Icon(Icons.send, color: Colors.blue), onPressed: _send),
+          ],
+        ),
+      ),
+    );
+  }
+}
+flutter:
+  assets:
+    - assets/bubbles/
+    - assets/bg/
 class UserModel {
   int coins;
   WealthLevel level;
