@@ -119,7 +119,8 @@ class TaskHomePage extends StatefulWidget {
 }
 
 class _TaskHomePageState extends State<TaskHomePage>
-    with SingleTickerProviderStateMixin {
+    with
+ SingleTickerProviderStateMixin {
   static const String _storageKey = 'klencod_tasks_v1';
 
   final List<Task> _tasks = [];
